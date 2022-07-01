@@ -1,24 +1,4 @@
-// const xhr = new XMLHttpRequest();
-
-// xhr.open('GET', 'http://localhost:3000/api/products');
-
-// xhr.responseType = 'json';
-
-// xhr.onload = function(){
-//     // console.log(JSON.parse(xhr.response));  
-//     console.log(xhr.response);
-// } 
-
-// xhr.send();
-
-// <a href="./product.html?id=42">
-//     <article>
-//       <img src=".../product01.jpg" alt="Lorem ipsum dolor sit amet, Kanap name1">
-//       <h3 class="productName">Kanap name1</h3>
-//       <p class="productDescription">Dis enim malesuada risus sapien gravida nulla nisl arcu. Dis enim malesuada risus sapien gravida nulla nisl arcu.</p>
-//     </article>
-//   </a>
-
+// // // // // request API
 fetch('http://localhost:3000/api/products')
     .then(response => response.json())
     .then(data => {
@@ -26,6 +6,7 @@ fetch('http://localhost:3000/api/products')
 
         console.log(data)})
 
+// // // // // Function who display the products on the homepage
 function displayProducts (fetchedData) {
 
     fetchedData.forEach(product => {
@@ -43,7 +24,15 @@ function displayProducts (fetchedData) {
         image.alt = `${product.altTxt}`;
         card.appendChild(image);
 
+        let productName = document.createElement("h3");
+        productName.className = "productName";
+        productName.innerText = `${product.name}`; 
+        card.appendChild(productName);
 
+        let productDescription = document.createElement("p");
+        productDescription.className = "productDescription";
+        productDescription.innerText = `${product.description}`; 
+        card.appendChild(productDescription);
 
     });
 }
