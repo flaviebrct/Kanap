@@ -6,6 +6,7 @@ fetch('http://localhost:3000/api/products')
 
         console.log(data)})
 
+
 // // // // // Function who display the products on the homepage
 function displayProducts (fetchedData) {
 
@@ -15,6 +16,16 @@ function displayProducts (fetchedData) {
         let link = document.createElement("a");
         link.href = `./product.html?id=${product._id}`;
         sectionItems.appendChild(link);
+
+        // let url = new URL(link);
+        // let search_params = new URLSearchParams(url.search);
+
+        // if(search_params.has("id")){
+        //     let id = search_params.get('id'); 
+        //     console.log((id));
+
+        // }else {console.log("Error");}
+
         
         let card = document.createElement("article");
         link.appendChild(card);
