@@ -53,7 +53,7 @@ function productInfos(data) {
         let quantity = parseInt(document.getElementById('quantity').value);
         let color = document.getElementById('colors').value;
         let check = true;
-        if (quantity <= 0 || quantity > 100 || quantity == isNaN) {
+        if (quantity <= 0 || quantity > 100 || isNaN(quantity)) {
             check = false
             alert(`Vous devez selectionner une quantité valide de ${product.name} pour continuer`)
         }
@@ -63,8 +63,8 @@ function productInfos(data) {
         }
         if (check == true) {
             addBasket({ id: `${product._id}`, name: `${product.name}`, quantity: quantity, color: `${color}` })
+            alert(`Vous avez ajouté ${quantity} ${product.name} au panier !`);
         }
     });
-
 
 }   
