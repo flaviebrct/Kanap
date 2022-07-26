@@ -22,21 +22,21 @@ function productInfos(data) {
     // // Image
     let imageContainer = document.querySelector(".item__img");
     let image = document.createElement("img")
-    image.src = `${product.imageUrl}`;
-    image.alt = `${product.altTxt}`;
-    imageContainer.appendChild(image);
+    image.src = product.imageUrl
+    image.alt = product.altTxt
+    imageContainer.appendChild(image)
 
     // // Title
     let title = document.querySelector("#title")
-    title.innerHTML = `${product.name}`
+    title.innerHTML = product.name
 
     // // Price
     let price = document.querySelector("#price")
-    price.innerHTML = `${product.price}`
+    price.innerHTML = product.price
 
     // // Description
     let info = document.querySelector("#description")
-    info.innerHTML = `${product.description}`
+    info.innerHTML = product.description
 
     // // Colors
     let colorsList = document.getElementById("colors")
@@ -44,8 +44,8 @@ function productInfos(data) {
 
     product.colors.forEach(colorValue => {
         let element = document.createElement("option")
-        element.value = `${colorValue}`
-        element.innerHTML = `${colorValue}`
+        element.value = colorValue
+        element.innerHTML = colorValue
         colorsList.appendChild(element)
     })
 
@@ -62,8 +62,7 @@ function productInfos(data) {
             alert(`Vous devez selectionner une couleur de ${product.name} pour continuer`)
         }
         if (check == true) {
-            addBasket({ id: `${product._id}`, name: `${product.name}`, quantity: quantity, color: `${color}` })
-            alert(`Vous avez ajouté ${quantity} ${product.name} au panier !`);
+            addBasket({ id: product._id, name: product.name, quantity: quantity, color: color })
         }
     });
 
