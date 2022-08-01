@@ -1,10 +1,12 @@
+basket()
+
 //Local storage
-//Sauvegarder le panier
+//Save basket
 function saveBasket(basket) {
     localStorage.setItem("basket", JSON.stringify(basket))
 }
 
-//Afficher le panier
+//Get basket
 function getBasket() {
     let basket = localStorage.getItem("basket")
     if (basket == null) {
@@ -13,14 +15,13 @@ function getBasket() {
         return JSON.parse(basket)
     }
 }
-//Ajouter au panier
+//Add product to basket
 export function addBasket(product) {
     let basket = getBasket()
     let foundProduct = basket.find(p => p.id == product.id && p.color == product.color)
     let index = basket.findIndex((p) => (p.id == product.id && p.color == product.color))
     if (foundProduct != undefined) {
         let total = product.quantity + foundProduct.quantity
-        console.log(total);
         if (total > 100) {
             alert('Erreur')
         } else {
@@ -37,47 +38,81 @@ export function addBasket(product) {
     saveBasket(basket)
 }
 
-//Nombre total d'articles dans le panier
+//Total of items in basket
 function totalProducts() {
     let basket = getBasket()
     let number = 0
     for (let product of basket) {
         number += product.quantity
     }
-    return number
+    let totalQuantity = document.getElementById("totalQuantity")
+    totalQuantity.innerHTML = number
 }
 
-//Supprimer un article du panier
-function deleteFromCart(id) {
+//Total price of the basket
+async function totalProductsPrice() {
     let basket = getBasket()
+    let price = 0
+    for (let product of basket) {
+        await fetch('http://localhost:3000/api/products/' + product.id)
+        .then(response => response.json())
+        .then(data => {
+            price += product.quantity * data.price
+        })
+    }
+    let totalPrice = document.getElementById("totalPrice")
+    totalPrice.innerHTML = new Intl.NumberFormat().format(price)
+}
+
+
+//Delete item from cart
+function deleteFromCart(id, color) {
+    let basket = getBasket()
+    console.log(basket);
     basket.forEach(function (product, index) {
-        if (id === product.id) {
+        if (id == product.id && color === product.color) {
             basket.splice(index, 1)
+            let deletedEl = document.querySelector(`article[data-id='${product.id}'][data-color='${color}']`)
+            deletedEl.parentElement.removeChild(deletedEl)
         }
     })
     saveBasket(basket)
-    location.reload()
 }
 
-let basket = getBasket()
+//Get product info + sort by id
+async function basket() {
+    let basket = getBasket()
 
-basket.forEach(cartProduct => {
+    basket.sort((a, b) => {
+        if (a.id < b.id)
+          return -1;
+        if (a.id > b.id)
+          return 1;
+        return 0;
+      })
 
-    //Request API
-    const id = cartProduct.id
-    const color = cartProduct.color
-    const quantity = cartProduct.quantity
-    fetch('http://localhost:3000/api/products/' + id)
-        .then(response => response.json())
-        .then(data => {
-            cartProductInfos(data, color, quantity);
-        })
-});
+    for (let i = 0; i < basket.length; i++) {
+        let cartProduct = basket[i]
+        //Request API
+        const id = cartProduct.id
+        const color = cartProduct.color
+        const quantity = cartProduct.quantity
+        await fetch('http://localhost:3000/api/products/' + id)
+            .then(response => response.json())
+            .then(data => {
+                cartProductInfos(data, color, quantity);
+            })
+    };
 
+    totalProducts()
+    totalProductsPrice()
+}
+
+//Display product info
 function cartProductInfos(data, color, quantity) {
     const product = data
 
-    //Balise article 
+    //Article
     let sectionEl = document.getElementById("cart__items")
     let articleEl = document.createElement("article")
     articleEl.className = "cart__item"
@@ -106,7 +141,7 @@ function cartProductInfos(data, color, quantity) {
     divContentDescription.className = "cart__item__content__description"
     divContentEl.appendChild(divContentDescription)
 
-    //Titre h2
+    //Title h2
     let titleProductName = document.createElement("h2")
     titleProductName.innerHTML = product.name
     divContentDescription.appendChild(titleProductName)
@@ -118,7 +153,7 @@ function cartProductInfos(data, color, quantity) {
 
     //Price
     let priceParagraph = document.createElement("p")
-    priceParagraph.innerHTML = product.price + ("€")
+    priceParagraph.innerHTML = new Intl.NumberFormat().format(product.price) + ("€")
     divContentDescription.appendChild(priceParagraph)
 
     //Div .cart__item__content__settings
@@ -157,10 +192,14 @@ function cartProductInfos(data, color, quantity) {
     deleteItemParagraph.innerHTML = "Supprimer"
     divContentSettingsDelete.appendChild(deleteItemParagraph)
 
-    divContentSettingsDelete.addEventListener("click", () => { deleteFromCart(product._id) })
+    divContentSettingsDelete.addEventListener("click", () => { deleteFromCart(product._id, color)})
 
     //Total
     //Quantity
-    let totalQuantity = document.getElementById("totalQuantity")
-    totalQuantity.innerHTML = totalProducts()
+    // let totalQuantity = document.getElementById("totalQuantity")
+    // totalQuantity.innerHTML = totalProducts(product.quantity)
+
+    // let totalPrice = document.getElementById("totalPrice")
+    // totalPrice.innerHTML = totalProductsPrice(product.price, product.quantity)
+
 }

@@ -11,9 +11,6 @@ fetch('http://localhost:3000/api/products/' + id)
 // // // // // Imports from cart.js
 import { addBasket } from './cart.js'
 
-
-
-
 // // // // // Function who display the product info
 function productInfos(data) {
 
@@ -32,7 +29,7 @@ function productInfos(data) {
 
     // // Price
     let price = document.querySelector("#price")
-    price.innerHTML = product.price
+    price.innerHTML = new Intl.NumberFormat().format(product.price)
 
     // // Description
     let info = document.querySelector("#description")
