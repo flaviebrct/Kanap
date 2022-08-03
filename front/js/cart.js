@@ -45,13 +45,10 @@ function modifyQuantity(product) {
     let basket = getBasket()
     let foundProduct = basket.find(p => p.id == product.id && p.color == product.color)
     let index = basket.findIndex((p) => (p.id == product.id && p.color == product.color))
-    console.log(foundProduct);
     let newQuantity = parseInt(document.querySelector(`article[data-id='${product.id}'][data-color='${product.color}']`).getElementsByTagName('input')[0].value)
 
     if (foundProduct != undefined) {
         foundProduct.quantity = newQuantity
-        console.log(typeof (newQuantity));
-        console.log(`nouvelle quantité : ${newQuantity}`)
         basket.splice(index, 1)
         basket.push(foundProduct)
         saveBasket(basket)
@@ -203,6 +200,8 @@ function cartProductInfos(data, color, quantity) {
     //event modify quantity
     quantityInput.addEventListener("input", (e) => {
         modifyQuantity({ id: product._id, color: color })
+        totalProducts()
+        totalProductsPrice()
     })
 
     //Div .cart__item__content__settings__delete
@@ -217,5 +216,9 @@ function cartProductInfos(data, color, quantity) {
     divContentSettingsDelete.appendChild(deleteItemParagraph)
 
     //event delete
-    deleteItemParagraph.addEventListener("click", () => { deleteFromCart(product._id, color) })
+    deleteItemParagraph.addEventListener("click", () => {
+        deleteFromCart(product._id, color) 
+        totalProducts()
+        totalProductsPrice()
+    })
 }
