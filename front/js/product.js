@@ -61,6 +61,6 @@ function productInfos(data) {
         if (check == true) {
             addBasket({ id: product._id, name: product.name, quantity: quantity, color: color })
         }
-    });
+    })
 
 }   

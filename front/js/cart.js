@@ -15,6 +15,7 @@ function getBasket() {
         return JSON.parse(basket)
     }
 }
+
 //Add product to basket
 export function addBasket(product) {
     let basket = getBasket()
@@ -38,6 +39,25 @@ export function addBasket(product) {
     saveBasket(basket)
 }
 
+
+//Modify quantity
+function modifyQuantity(product) {
+    let basket = getBasket()
+    let foundProduct = basket.find(p => p.id == product.id && p.color == product.color)
+    let index = basket.findIndex((p) => (p.id == product.id && p.color == product.color))
+    console.log(foundProduct);
+    let newQuantity = parseInt(document.querySelector(`article[data-id='${product.id}'][data-color='${product.color}']`).getElementsByTagName('input')[0].value)
+
+    if (foundProduct != undefined) {
+        foundProduct.quantity = newQuantity
+        console.log(typeof (newQuantity));
+        console.log(`nouvelle quantité : ${newQuantity}`)
+        basket.splice(index, 1)
+        basket.push(foundProduct)
+        saveBasket(basket)
+    }
+}
+
 //Total of items in basket
 function totalProducts() {
     let basket = getBasket()
@@ -55,10 +75,10 @@ async function totalProductsPrice() {
     let price = 0
     for (let product of basket) {
         await fetch('http://localhost:3000/api/products/' + product.id)
-        .then(response => response.json())
-        .then(data => {
-            price += product.quantity * data.price
-        })
+            .then(response => response.json())
+            .then(data => {
+                price += product.quantity * data.price
+            })
     }
     let totalPrice = document.getElementById("totalPrice")
     totalPrice.innerHTML = new Intl.NumberFormat().format(price)
@@ -68,9 +88,8 @@ async function totalProductsPrice() {
 //Delete item from cart
 function deleteFromCart(id, color) {
     let basket = getBasket()
-    console.log(basket);
     basket.forEach(function (product, index) {
-        if (id == product.id && color === product.color) {
+        if (id == product.id && color == product.color) {
             basket.splice(index, 1)
             let deletedEl = document.querySelector(`article[data-id='${product.id}'][data-color='${color}']`)
             deletedEl.parentElement.removeChild(deletedEl)
@@ -85,11 +104,11 @@ async function basket() {
 
     basket.sort((a, b) => {
         if (a.id < b.id)
-          return -1;
+            return -1;
         if (a.id > b.id)
-          return 1;
+            return 1;
         return 0;
-      })
+    })
 
     for (let i = 0; i < basket.length; i++) {
         let cartProduct = basket[i]
@@ -103,7 +122,6 @@ async function basket() {
                 cartProductInfos(data, color, quantity);
             })
     };
-
     totalProducts()
     totalProductsPrice()
 }
@@ -111,6 +129,7 @@ async function basket() {
 //Display product info
 function cartProductInfos(data, color, quantity) {
     const product = data
+    const storageQuantity = quantity
 
     //Article
     let sectionEl = document.getElementById("cart__items")
@@ -178,8 +197,13 @@ function cartProductInfos(data, color, quantity) {
     quantityInput.name = "itemQuantity"
     quantityInput.min = "1"
     quantityInput.max = "100"
-    quantityInput.value = quantity
+    quantityInput.value = storageQuantity
     divContentSettingsQuantity.appendChild(quantityInput)
+
+    //event modify quantity
+    quantityInput.addEventListener("input", (e) => {
+        modifyQuantity({ id: product._id, color: color })
+    })
 
     //Div .cart__item__content__settings__delete
     let divContentSettingsDelete = document.createElement("div")
@@ -192,14 +216,6 @@ function cartProductInfos(data, color, quantity) {
     deleteItemParagraph.innerHTML = "Supprimer"
     divContentSettingsDelete.appendChild(deleteItemParagraph)
 
-    divContentSettingsDelete.addEventListener("click", () => { deleteFromCart(product._id, color)})
-
-    //Total
-    //Quantity
-    // let totalQuantity = document.getElementById("totalQuantity")
-    // totalQuantity.innerHTML = totalProducts(product.quantity)
-
-    // let totalPrice = document.getElementById("totalPrice")
-    // totalPrice.innerHTML = totalProductsPrice(product.price, product.quantity)
-
+    //event delete
+    deleteItemParagraph.addEventListener("click", () => { deleteFromCart(product._id, color) })
 }
