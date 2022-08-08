@@ -39,7 +39,6 @@ export function addBasket(product) {
     saveBasket(basket)
 }
 
-
 //Modify quantity
 function modifyQuantity(product) {
     let basket = getBasket()
@@ -48,9 +47,13 @@ function modifyQuantity(product) {
     let newQuantity = parseInt(document.querySelector(`article[data-id='${product.id}'][data-color='${product.color}']`).getElementsByTagName('input')[0].value)
 
     if (foundProduct != undefined) {
-        foundProduct.quantity = newQuantity
-        basket.splice(index, 1)
-        basket.push(foundProduct)
+        if (newQuantity <= 0 || newQuantity > 100 || isNaN(newQuantity)){
+            document.querySelector(`article[data-id='${product.id}'][data-color='${product.color}']`).getElementsByTagName('input')[0].value = foundProduct.quantity
+        } else {
+            foundProduct.quantity = newQuantity
+            basket.splice(index, 1)
+            basket.push(foundProduct)
+        }
         saveBasket(basket)
     }
 }
@@ -217,8 +220,46 @@ function cartProductInfos(data, color, quantity) {
 
     //event delete
     deleteItemParagraph.addEventListener("click", () => {
-        deleteFromCart(product._id, color) 
+        deleteFromCart(product._id, color)
         totalProducts()
         totalProductsPrice()
     })
 }
+
+
+// // // // // Form Validation
+let regexName = /^[a-zA-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ-]+$/
+
+function validateName(nameId, errorId) {
+    let nameValue = document.getElementById(nameId).value
+    let errorMsg = document.getElementById(errorId)
+
+    if (!nameValue.match(regexName)){
+        errorMsg.innerText = "Ce champ n'est pas valide!"
+        return false
+    }else {
+        errorMsg.innerText = ""
+        return true
+    }
+}
+let firstNameEl = document.getElementById("firstName")
+firstNameEl.addEventListener("input", () =>{
+    validateName("firstName", "firstNameErrorMsg")
+})
+
+let lastNameEl = document.getElementById("lastName")
+lastNameEl.addEventListener("input", () =>{
+    validateName("lastName", "lastNameErrorMsg")
+})
+
+
+let orderBtn = document.getElementById("order")
+
+orderBtn.addEventListener("click", (e) => {
+    e.preventDefault()
+    if (validateName("firstName", "firstNameErrorMsg") && validateName("lastName", "lastNameErrorMsg")){
+        alert("Ok commande")
+    }else {
+
+    }
+})
