@@ -47,7 +47,7 @@ function modifyQuantity(product) {
     let newQuantity = parseInt(document.querySelector(`article[data-id='${product.id}'][data-color='${product.color}']`).getElementsByTagName('input')[0].value)
 
     if (foundProduct != undefined) {
-        if (newQuantity <= 0 || newQuantity > 100 || isNaN(newQuantity)){
+        if (newQuantity <= 0 || newQuantity > 100 || isNaN(newQuantity)) {
             document.querySelector(`article[data-id='${product.id}'][data-color='${product.color}']`).getElementsByTagName('input')[0].value = foundProduct.quantity
         } else {
             foundProduct.quantity = newQuantity
@@ -228,38 +228,97 @@ function cartProductInfos(data, color, quantity) {
 
 
 // // // // // Form Validation
+
+// First and Last name validation 
 let regexName = /^[a-zA-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ-]+$/
 
 function validateName(nameId, errorId) {
     let nameValue = document.getElementById(nameId).value
     let errorMsg = document.getElementById(errorId)
 
-    if (!nameValue.match(regexName)){
+    if (!nameValue.match(regexName)) {
         errorMsg.innerText = "Ce champ n'est pas valide!"
         return false
-    }else {
+    } else {
         errorMsg.innerText = ""
         return true
     }
 }
 let firstNameEl = document.getElementById("firstName")
-firstNameEl.addEventListener("input", () =>{
+firstNameEl.addEventListener("input", () => {
     validateName("firstName", "firstNameErrorMsg")
 })
 
 let lastNameEl = document.getElementById("lastName")
-lastNameEl.addEventListener("input", () =>{
+lastNameEl.addEventListener("input", () => {
     validateName("lastName", "lastNameErrorMsg")
 })
 
+// Address validation
+let regexAddress = /^([0-9a-z'àâéèêôùûçÀÂÉÈÔÙÛÇ\s-]{1,50})$/
+function validateAdress() {
+    let addressValue = document.getElementById("address").value
+    let errorMsg = document.getElementById("addressErrorMsg")
 
+    if (!addressValue.match(regexAddress)) {
+        errorMsg.innerText = "Ce champ n'est pas valide!"
+        return false
+    } else {
+        errorMsg.innerText = ""
+        return true
+    }
+}
+let addressEl = document.getElementById("address")
+addressEl.addEventListener("input", () => {
+    validateAdress()
+})
+
+// City validation
+let regexCity = /^[a-zA-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ-]+$/
+function validateCity() {
+    let cityValue = document.getElementById("city").value
+    let errorMsg = document.getElementById("cityErrorMsg")
+
+    if (!cityValue.match(regexCity)) {
+        errorMsg.innerText = "Ce champ n'est pas valide!"
+        return false
+    } else {
+        errorMsg.innerText = ""
+        return true
+    }
+}
+let cityEl = document.getElementById("city")
+cityEl.addEventListener("input", () => {
+    validateCity()
+})
+
+// Email validation
+let regexEmail = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/
+function validateEmail() {
+    let emailValue = document.getElementById("email").value
+    let errorMsg = document.getElementById("emailErrorMsg")
+
+    if (!emailValue.match(regexEmail)) {
+        errorMsg.innerText = "Ce champ n'est pas valide!"
+        return false
+    } else {
+        errorMsg.innerText = ""
+        return true
+    }
+}
+let emailEl = document.getElementById("email")
+emailEl.addEventListener("input", () => {
+    validateEmail()
+})
+
+
+// Order btn behavior
 let orderBtn = document.getElementById("order")
-
 orderBtn.addEventListener("click", (e) => {
     e.preventDefault()
-    if (validateName("firstName", "firstNameErrorMsg") && validateName("lastName", "lastNameErrorMsg")){
-        alert("Ok commande")
-    }else {
-
+    if (validateName("firstName", "firstNameErrorMsg") && validateName("lastName", "lastNameErrorMsg") && validateAdress() && validateCity() && validateEmail()) {
+        alert("Commande en cours de validation...")
+    } else {
+        alert("Veuillez remplir tous les champs requis.")
     }
 })
