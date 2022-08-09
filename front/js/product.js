@@ -7,9 +7,28 @@ fetch('http://localhost:3000/api/products/' + id)
         productInfos(data);
     })
 
-
-// // // // // Imports from cart.js
-import { addBasket } from './cart.js'
+//Add product to basket
+function addBasket(product) {
+    let basket = JSON.parse(localStorage.getItem("basket"))
+    let foundProduct = basket.find(p => p.id == product.id && p.color == product.color)
+    let index = basket.findIndex((p) => (p.id == product.id && p.color == product.color))
+    if (foundProduct != undefined) {
+        let total = product.quantity + foundProduct.quantity
+        if (total > 100) {
+            alert('Erreur')
+        } else {
+            alert(`Vous avez ajouté ${product.quantity} ${product.name} au panier !`)
+            product.quantity += foundProduct.quantity
+            basket.splice(index, 1)
+            basket.push(product)
+        }
+    }
+    else {
+        alert(`Vous avez ajouté ${product.quantity} ${product.name} au panier !`)
+        basket.push(product)
+    }
+    localStorage.setItem("basket", JSON.stringify(basket))
+}
 
 // // // // // Function who display the product info
 function productInfos(data) {

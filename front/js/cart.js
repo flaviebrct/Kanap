@@ -16,29 +16,6 @@ function getBasket() {
     }
 }
 
-//Add product to basket
-export function addBasket(product) {
-    let basket = getBasket()
-    let foundProduct = basket.find(p => p.id == product.id && p.color == product.color)
-    let index = basket.findIndex((p) => (p.id == product.id && p.color == product.color))
-    if (foundProduct != undefined) {
-        let total = product.quantity + foundProduct.quantity
-        if (total > 100) {
-            alert('Erreur')
-        } else {
-            alert(`Vous avez ajouté ${product.quantity} ${product.name} au panier !`)
-            product.quantity += foundProduct.quantity
-            basket.splice(index, 1)
-            basket.push(product)
-        }
-    }
-    else {
-        alert(`Vous avez ajouté ${product.quantity} ${product.name} au panier !`)
-        basket.push(product)
-    }
-    saveBasket(basket)
-}
-
 //Modify quantity
 function modifyQuantity(product) {
     let basket = getBasket()
@@ -255,7 +232,7 @@ lastNameEl.addEventListener("input", () => {
 })
 
 // Address validation
-let regexAddress = /^([0-9a-z'àâéèêôùûçÀÂÉÈÔÙÛÇ\s-]{1,50})$/
+let regexAddress = /^([0-9a-zA-Z'àâéèêôùûçÀÂÉÈÔÙÛÇ\s-]{1,50})$/
 function validateAdress() {
     let addressValue = document.getElementById("address").value
     let errorMsg = document.getElementById("addressErrorMsg")
@@ -317,8 +294,29 @@ let orderBtn = document.getElementById("order")
 orderBtn.addEventListener("click", (e) => {
     e.preventDefault()
     if (validateName("firstName", "firstNameErrorMsg") && validateName("lastName", "lastNameErrorMsg") && validateAdress() && validateCity() && validateEmail()) {
+        let productsId = []
+        let basket = getBasket()
+        for (let i = 0; i < basket.length; i++) {
+            let id = basket[i].id
+            productsId.push(id)
+        }
+        console.log(productsId);
+
+        const getOrderInfo = {
+            contact: {
+                firstName: firstNameEl.value,
+                lastName: lastNameEl.value,
+                address: addressEl.value,
+                city: cityEl.value,
+                email: emailEl.value
+            },
+            products: productsId
+        };
+        
+        console.log(getOrderInfo);
         alert("Commande en cours de validation...")
     } else {
         alert("Veuillez remplir tous les champs requis.")
     }
 })
+
