@@ -3,8 +3,6 @@ fetch('http://localhost:3000/api/products')
     .then(response => response.json())
     .then(data => {
         displayProducts(data);
-
-        console.log(data)
     })
 
 

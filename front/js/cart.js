@@ -302,7 +302,7 @@ orderBtn.addEventListener("click", (e) => {
         }
         console.log(productsId);
 
-        const getOrderInfo = {
+        const commande = {
             contact: {
                 firstName: firstNameEl.value,
                 lastName: lastNameEl.value,
@@ -312,9 +312,24 @@ orderBtn.addEventListener("click", (e) => {
             },
             products: productsId
         };
-        
-        console.log(getOrderInfo);
-        alert("Commande en cours de validation...")
+        console.log(commande);
+
+        // POST request using fetch()
+        fetch("http://localhost:3000/api/products/order", {
+            method: "POST",
+            body: JSON.stringify(commande),
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        })
+
+            .then(response => response.json())
+            .then(orderInfo => {
+                location.href = `./confirmation.html?id=${orderInfo.orderId}`
+            });
+
+
     } else {
         alert("Veuillez remplir tous les champs requis.")
     }

@@ -1,5 +1,4 @@
 const id = location.search.split('id=')[1]
-console.log(id)
 // // // // // Request API
 fetch('http://localhost:3000/api/products/' + id)
     .then(response => response.json())
