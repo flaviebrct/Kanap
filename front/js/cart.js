@@ -279,45 +279,46 @@ emailEl.addEventListener("input", () => {
 let orderBtn = document.getElementById("order")
 orderBtn.addEventListener("click", (e) => {
     e.preventDefault()
-    if (validateName("firstName", "firstNameErrorMsg") && validateName("lastName", "lastNameErrorMsg") && validateAdress() && validateCity() && validateEmail()) {
-        let productsId = []
-        let basket = getBasket()
-        for (let i = 0; i < basket.length; i++) {
-            let id = basket[i].id
-            productsId.push(id)
-        }
-        console.log(productsId);
-
-        const commande = {
-            contact: {
-                firstName: firstNameEl.value,
-                lastName: lastNameEl.value,
-                address: addressEl.value,
-                city: cityEl.value,
-                email: emailEl.value
-            },
-            products: productsId
-        };
-        console.log(commande);
-
-        // POST request using fetch()
-        fetch("http://localhost:3000/api/products/order", {
-            method: "POST",
-            body: JSON.stringify(commande),
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
+    let basket = getBasket()
+    if (basket != 0){
+        if (validateName("firstName", "firstNameErrorMsg") && validateName("lastName", "lastNameErrorMsg") && validateAdress() && validateCity() && validateEmail()) {
+            let productsId = []
+            for (let i = 0; i < basket.length; i++) {
+                let id = basket[i].id
+                productsId.push(id)
             }
-        })
-
-            .then(response => response.json())
-            .then(orderInfo => {
-                location.href = `./confirmation.html?id=${orderInfo.orderId}`
-            });
-
-
+    
+            const commande = {
+                contact: {
+                    firstName: firstNameEl.value,
+                    lastName: lastNameEl.value,
+                    address: addressEl.value,
+                    city: cityEl.value,
+                    email: emailEl.value
+                },
+                products: productsId
+            };
+    
+            // POST request using fetch()
+            fetch("http://localhost:3000/api/products/order", {
+                method: "POST",
+                body: JSON.stringify(commande),
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => response.json())
+                .then(orderInfo => {
+                    location.href = `./confirmation.html?id=${orderInfo.orderId}`
+                });
+    
+    
+        } else {
+            alert("Veuillez remplir tous les champs requis.")
+        }
     } else {
-        alert("Veuillez remplir tous les champs requis.")
+        alert("Votre panier ne contient aucun article.")
     }
 })
 

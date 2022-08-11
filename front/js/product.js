@@ -35,7 +35,7 @@ function productInfos(data) {
     // // Colors
     let colorsList = document.getElementById("colors")
     colorsList.setAttribute("required", "")
-
+    // Loop for all the colors options
     product.colors.forEach(colorValue => {
         let element = document.createElement("option")
         element.value = colorValue
@@ -43,6 +43,7 @@ function productInfos(data) {
         colorsList.appendChild(element)
     })
 
+    // Button behaviour 
     addToCart.addEventListener("click", () => {
         let quantity = parseInt(document.getElementById('quantity').value);
         let color = document.getElementById('colors').value;

@@ -17,22 +17,21 @@ export function getBasket() {
 //Add product to basket
 export function addBasket(product) {
     let basket = getBasket()
-    
     let foundProduct = basket.find(p => p.id == product.id && p.color == product.color)
     let index = basket.findIndex((p) => (p.id == product.id && p.color == product.color))
     if (foundProduct != undefined) {
         let total = product.quantity + foundProduct.quantity
         if (total > 100) {
-            alert('Erreur')
+            alert(`Vous ne pouvez ajouter plus que ${100 - foundProduct.quantity} ${product.name} ${product.color}`)
         } else {
-            alert(`Vous avez ajouté ${product.quantity} ${product.name} au panier !`)
+            alert(`Vous avez ajouté ${product.quantity} ${product.name} ${product.color} au panier !`)
             product.quantity += foundProduct.quantity
             basket.splice(index, 1)
             basket.push(product)
         }
     }
     else {
-        alert(`Vous avez ajouté ${product.quantity} ${product.name} au panier !`)
+        alert(`Vous avez ajouté ${product.quantity} ${product.name} ${product.color} au panier !`)
         basket.push(product)
     }
     saveBasket(basket)
